@@ -45,7 +45,7 @@ export default function Navbar() {
               rel="noopener noreferrer"
             >
               <AccountCircleSharpIcon fontSize="large" />{" "}
-              {user ? user.displayName : "No user"}
+              {user ? user.displayName : ""}
             </a>
           </div>
           {user && (
