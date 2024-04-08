@@ -7,6 +7,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { Backdrop, CircularProgress } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
 import { fetchTodo, removeTodo, updateTodo } from "../features/todo/todoSlice";
 
 const Todos = () => {
@@ -16,7 +20,9 @@ const Todos = () => {
     dispatch(fetchTodo());
   }, [dispatch]);
 
-  const todos = useSelector((state) => state.todos);
+  const { loading, error, updateState, response, todos } = useSelector(
+    (state) => state.todo
+  );
 
   const [update, setUpdate] = useState("");
   const [todoId, setTodoId] = useState("");
@@ -30,7 +36,20 @@ const Todos = () => {
 
   return (
     <>
-      <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-16">
+      <Backdrop
+        open={loading}
+        style={{
+          zIndex: "z-50",
+          color: "#fff",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(2px)", // Add a backdrop filter for blur effect
+          transform: "scale(1.05)", // Add a scaling effect
+        }}
+      >
+        <CircularProgress color="inherit" size={50} thickness={5} />
+      </Backdrop>
+
+      <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-5">
         <ul className="divide-y divide-gray-200 px-4">
           {todos &&
             todos.map((todo, index) => (
@@ -39,15 +58,7 @@ const Todos = () => {
                   key={todo.id}
                   className="py-4 flex items-center justify-between"
                 >
-                  <div
-                    className="flex items-center"
-                    onClick={() => {
-                      setUpdate(todo.text);
-                      setTodoId(todo.id);
-                      setIndex(index);
-                      setOpen(true);
-                    }}
-                  >
+                  <div className="flex items-center">
                     <label
                       htmlFor={`todo${index}`}
                       className="ml-3 block text-gray-900"
@@ -56,63 +67,77 @@ const Todos = () => {
                     </label>
                   </div>
 
-                  <button
-                    onClick={() => dispatch(removeTodo(todo.id))}
-                    className="text-red-500 hover:text-red-700 focus:outline-none font-bold"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => {
+                        setUpdate(todo.text);
+                        setTodoId(todo.id);
+                        setIndex(index);
+                        setOpen(true);
+                      }}
+                      className="text-black focus:outline-none font-bold mr-4"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      <EditIcon />
+                    </button>
+                    <button
+                      onClick={() => dispatch(removeTodo(todo.id))}
+                      className="text-red-500 hover:text-red-700 focus:outline-none font-bold"
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </div>
                 </li>
               </>
             ))}
         </ul>
       </div>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Update Todo</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="updatedText"
-            label="Updated Todo Text"
-            type="text"
-            fullWidth
-            value={update}
-            onChange={(e) => {
-              setUpdate(e.target.value);
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              dispatch(updateTodo({ id: todoId, text: update, index: index }));
-              handleClose();
-              setUpdate("");
-              setTodoId("");
-              setIndex("");
-            }}
-            color="primary"
-          >
-            Update
-          </Button>
-        </DialogActions>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        className="fixed inset-0 z-50 overflow-y-auto"
+      >
+        <div className="flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <DialogTitle className="text-lg font-bold mb-4 w-full">
+              Modify Your Todo
+            </DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="updatedText"
+                label="Enter Changes"
+                type="text"
+                fullWidth
+                value={update}
+                onChange={(e) => {
+                  setUpdate(e.target.value);
+                }}
+                className="w-full mb-4"
+              />
+            </DialogContent>
+            <DialogActions className="flex justify-end">
+              <Button onClick={handleClose} color="secondary" className="mr-2">
+                Go Back
+              </Button>
+              <Button
+                onClick={() => {
+                  dispatch(
+                    updateTodo({ id: todoId, text: update, index: index })
+                  );
+                  handleClose();
+                  setUpdate("");
+                  setTodoId("");
+                  setIndex("");
+                }}
+                color="primary"
+                className="ml-2"
+              >
+                Modify
+              </Button>
+            </DialogActions>
+          </div>
+        </div>
       </Dialog>
     </>
   );

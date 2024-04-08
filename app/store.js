@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import todoReducer from "./features/todo/todoSlice";
+import firebaseSlice from "./features/todo/firebaseSlice";
 
 export const store = configureStore({
-  reducer: todoReducer,
+  reducer: { todo: todoReducer, firebase: firebaseSlice },
 });
