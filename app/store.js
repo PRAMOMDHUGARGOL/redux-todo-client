@@ -4,4 +4,8 @@ import firebaseSlice from "./features/todo/firebaseSlice";
 
 export const store = configureStore({
   reducer: { todo: todoReducer, firebase: firebaseSlice },
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware({
+  //     serializableCheck: false,
+  //   }),
 });

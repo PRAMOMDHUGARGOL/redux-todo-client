@@ -15,14 +15,14 @@ import { fetchTodo, removeTodo, updateTodo } from "../features/todo/todoSlice";
 
 const Todos = () => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.firebase);
+  const { loading, todos } = useSelector((state) => state.todo);
 
   useEffect(() => {
-    dispatch(fetchTodo());
+    if (user?.uid) {
+      dispatch(fetchTodo(user.uid));
+    }
   }, [dispatch]);
-
-  const { loading, error, updateState, response, todos } = useSelector(
-    (state) => state.todo
-  );
 
   const [update, setUpdate] = useState("");
   const [todoId, setTodoId] = useState("");
@@ -51,44 +51,49 @@ const Todos = () => {
 
       <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-5">
         <ul className="divide-y divide-gray-200 px-4">
-          {todos &&
+          {todos && todos.length > 0 ? (
             todos.map((todo, index) => (
-              <>
-                <li
-                  key={todo.id}
-                  className="py-4 flex items-center justify-between"
-                >
-                  <div className="flex items-center">
-                    <label
-                      htmlFor={`todo${index}`}
-                      className="ml-3 block text-gray-900"
-                    >
-                      <span className="text-lg font-medium">{todo.text}</span>
-                    </label>
-                  </div>
-
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => {
-                        setUpdate(todo.text);
-                        setTodoId(todo.id);
-                        setIndex(index);
-                        setOpen(true);
-                      }}
-                      className="text-black focus:outline-none font-bold mr-4"
-                    >
-                      <EditIcon />
-                    </button>
-                    <button
-                      onClick={() => dispatch(removeTodo(todo.id))}
-                      className="text-red-500 hover:text-red-700 focus:outline-none font-bold"
-                    >
-                      <DeleteIcon />
-                    </button>
-                  </div>
-                </li>
-              </>
-            ))}
+              <li
+                key={todo.id}
+                className="py-4 flex items-center justify-between"
+              >
+                <div className="flex items-center">
+                  <label
+                    htmlFor={`todo${index}`}
+                    className="ml-3 block text-gray-900"
+                  >
+                    <span className="text-lg font-medium">{todo.text}</span>
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => {
+                      setUpdate(todo.text);
+                      setTodoId(todo.id);
+                      setIndex(index);
+                      setOpen(true);
+                    }}
+                    className="text-black focus:outline-none font-bold mr-4"
+                  >
+                    <EditIcon />
+                  </button>
+                  <button
+                    onClick={() =>
+                      dispatch(removeTodo({ id: todo.id, uid: user.uid }))
+                    }
+                    className="text-red-500 hover:text-red-700 focus:outline-none font-bold"
+                  >
+                    <DeleteIcon />
+                  </button>
+                </div>
+              </li>
+            ))
+          ) : (
+            <li className="py-4 text-gray-600 text-center text-2xl">
+              No todos for today :( <br />
+              Add some tasks!
+            </li>
+          )}
         </ul>
       </div>
       <Dialog
@@ -123,7 +128,12 @@ const Todos = () => {
               <Button
                 onClick={() => {
                   dispatch(
-                    updateTodo({ id: todoId, text: update, index: index })
+                    updateTodo({
+                      id: todoId,
+                      text: update,
+                      index: index,
+                      uid: user.uid,
+                    })
                   );
                   handleClose();
                   setUpdate("");

@@ -9,34 +9,44 @@ const initialState = {
   response: "",
 };
 const apiURL = "https://redux-todo-server-h9sx.onrender.com/";
-const localURL = "http://localhost:8080/";
+// "https://redux-todo-server-h9sx.onrender.com/";
+// const localURL = "http://localhost:8080/";
 
-export const fetchTodo = createAsyncThunk("todo/fetchTodo", async () => {
-  const response = await axios.get(`${apiURL}api/items`);
-  return response.data.response;
+export const fetchTodo = createAsyncThunk("todo/fetchTodo", async (data) => {
+  try {
+    const response = await axios.post(`${apiURL}api/items`, {
+      uid: data,
+    });
+    return response.data.response;
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    throw error;
+  }
 });
 
 export const addTodo = createAsyncThunk("todo/addTodo", async (data) => {
   const response = await axios.post(`${apiURL}api/add`, {
     id: nanoid(),
-    text: data,
+    text: data.text,
+    uid: data.uid,
   });
   return response.data.response;
 });
 
 export const removeTodo = createAsyncThunk("todo/removeTodo", async (data) => {
   const response = await axios.post(`${apiURL}api/remove`, {
-    id: data,
+    id: data.id,
+    uid: data.uid,
   });
   return response.data.response;
 });
 
 export const updateTodo = createAsyncThunk("todo/updateTodo", async (data) => {
-  console.log(data);
   const response = await axios.post(`${apiURL}api/update`, {
     id: data.id,
     text: data.text,
     index: data.index,
+    uid: data.uid,
   });
   return response.data.response;
 });
@@ -68,10 +78,10 @@ export const todoSlice = createSlice({
 
     builder
       .addCase(fetchTodo.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(fetchTodo.fulfilled, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         state.todos = action.payload;
         state.response = "Getting all your plans! Hold on :)";
       })

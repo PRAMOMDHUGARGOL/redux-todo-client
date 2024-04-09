@@ -9,12 +9,10 @@ import { loginUser, setLoading } from "./features/todo/firebaseSlice";
 import Login from "./components/Login";
 
 export default function Home() {
-  const { user, isLoading } = useSelector((state) => state.firebase);
   const dispatch = useDispatch();
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        console.log(authUser);
         dispatch(loginUser(authUser));
         dispatch(setLoading(false));
       } else {
@@ -22,6 +20,8 @@ export default function Home() {
       }
     });
   });
+
+  const { user, isLoading } = useSelector((state) => state.firebase);
 
   return (
     <>
