@@ -26,21 +26,22 @@ const Login = () => {
     <>
       {/* <Navbar /> */}
       <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-5">
+        <div className="text-center sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto px-4">
+          <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-white mb-5">
             Welcome to Plan-O
           </h1>
-          <p className="text-lg text-gray-200 mb-5">
+          <p className="text-lg lg:text-xl xl:text-2xl text-gray-200 mb-5">
             Organize your day with Plan-O to achieve greater productivity!
           </p>
-          <p className="text-lg text-gray-200 mb-5">
+          <p className="text-lg lg:text-xl xl:text-2xl text-gray-200 mb-5">
             Login or Register to get started.
           </p>
         </div>
-        <div class="flex flex-col items-center justify-center px-6 mx-auto mt-0 sm:mt-24">
+
+        <div class="flex flex-col items-center justify-center px-6 mx-auto mt-0 sm:mt-24 p-4">
           <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+              <h1 class="text-md font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your Plan-O account
               </h1>
               <div class="space-y-4 md:space-y-6">
