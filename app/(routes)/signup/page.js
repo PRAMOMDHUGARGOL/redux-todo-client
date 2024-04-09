@@ -21,6 +21,7 @@ import { auth, db } from "@/app/lib/firebase";
 import { useRouter } from "next/navigation";
 import Navbar from "@/app/components/Navbar";
 import dayjs from "dayjs";
+
 const SignupPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

@@ -10,15 +10,47 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
+
   const handleSubmit = async () => {
     try {
+      // Validate email and password
+      if (!validateEmail(email)) {
+        alert("Please enter a valid email address");
+        return;
+      } else if (!validatePassword(password)) {
+        alert("Password must be at least 6 characters long");
+        return;
+      }
       // Sign in user
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      // Redirect user after successful login
       if (pathname === "/login") {
         router.push("/");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.log("Error:", error.message);
+      if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password"
+      ) {
+        alert("You are an Intruder, not our User");
+      } else {
+        alert("An error occurred. Please try again later.");
+      } // Generic error message for other errors
+      // Handle error appropriately (e.g., log error, track analytics, etc.)
     }
   };
 
