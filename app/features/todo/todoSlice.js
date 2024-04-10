@@ -47,6 +47,8 @@ export const updateTodo = createAsyncThunk("todo/updateTodo", async (data) => {
     text: data.text,
     index: data.index,
     uid: data.uid,
+    completed: data.completed,
+    sender: data.sender,
   });
   return response.data.response;
 });
@@ -78,18 +80,18 @@ export const todoSlice = createSlice({
 
     builder
       .addCase(fetchTodo.pending, (state) => {
-        // state.loading = true;
+        state.loading = true;
       })
       .addCase(fetchTodo.fulfilled, (state, action) => {
-        // state.loading = false;
         state.todos = action.payload;
+        state.loading = false;
         state.response = "Getting all your plans! Hold on :)";
       })
       .addCase(fetchTodo.rejected, (state, action) => {
         state.error = action.error.message;
       });
 
-    builder.addCase(removeTodo.pending, (state, action) => {
+    builder.addCase(removeTodo.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(removeTodo.fulfilled, (state, action) => {
@@ -98,23 +100,30 @@ export const todoSlice = createSlice({
       state.response = "Deleting item! Hold Tight";
     });
 
-    builder.addCase(updateTodo.fulfilled, (state, action) => {
-      // Assuming you already have the index of the todo to be updated
-      const index = action.payload.index;
-      if (index >= 0 && index < state.todos.length) {
-        // Create a copy of the state.todos array
-        const updatedTodos = [...state.todos];
-        // Update the specific todo item at the known index
-        updatedTodos[index] = {
-          id: action.payload.id,
-          text: action.payload.text,
-        };
-        // Update the state with the new todos array
-        state.todos = updatedTodos;
-      }
+    builder
+      .addCase(updateTodo.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateTodo.fulfilled, (state, action) => {
+        state.loading = false;
 
-      state.response = "update";
-    });
+        // Assuming you already have the index of the todo to be updated
+        const index = action.payload.index;
+        if (index >= 0 && index < state.todos.length) {
+          // Create a copy of the state.todos array
+          const updatedTodos = [...state.todos];
+          // Update the specific todo item at the known index
+          updatedTodos[index] = {
+            id: action.payload.id,
+            text: action.payload.text,
+            completed: action.payload.completed,
+          };
+
+          // Update the state with the new todos array
+          state.todos = updatedTodos;
+        }
+        state.response = "update";
+      });
   },
 });
 

@@ -27,8 +27,14 @@ const Todos = () => {
   const [update, setUpdate] = useState("");
   const [todoId, setTodoId] = useState("");
   const [index, setIndex] = useState("");
+  const [completed, setCompleted] = useState(false);
 
   const [open, setOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -58,34 +64,64 @@ const Todos = () => {
                 className="py-4 flex items-center justify-between"
               >
                 <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`todo${index}`}
+                    className="mr-3 h-6 w-6 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
+                    checked={todo.completed}
+                    onChange={(e) => {
+                      dispatch(
+                        updateTodo({
+                          id: todo.id,
+                          text: todo.text,
+                          index: index,
+                          uid: user.uid,
+                          completed: e.target.checked, // Use the new completed status
+                          sender: "status",
+                        })
+                      );
+                    }}
+                  />
                   <label
                     htmlFor={`todo${index}`}
                     className="ml-3 block text-gray-900"
                   >
-                    <span className="text-lg font-medium">{todo.text}</span>
+                    <span
+                      className="text-lg font-medium"
+                      style={{
+                        textDecoration: todo.completed
+                          ? "line-through"
+                          : "none",
+                      }}
+                    >
+                      {todo.text}
+                    </span>
                   </label>
                 </div>
-                <div className="flex items-center">
-                  <button
-                    onClick={() => {
-                      setUpdate(todo.text);
-                      setTodoId(todo.id);
-                      setIndex(index);
-                      setOpen(true);
-                    }}
-                    className="text-black focus:outline-none font-bold mr-4"
-                  >
-                    <EditIcon />
-                  </button>
-                  <button
-                    onClick={() =>
-                      dispatch(removeTodo({ id: todo.id, uid: user.uid }))
-                    }
-                    className="text-red-500 hover:text-red-700 focus:outline-none font-bold"
-                  >
-                    <DeleteIcon />
-                  </button>
-                </div>
+                {todo.completed === false && (
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => {
+                        setUpdate(todo.text);
+                        setTodoId(todo.id);
+                        setIndex(index);
+                        setCompleted(todo.completed);
+                        setOpen(true);
+                      }}
+                      className="text-black focus:outline-none font-bold mr-4"
+                    >
+                      <EditIcon />
+                    </button>
+                    <button
+                      onClick={() =>
+                        dispatch(removeTodo({ id: todo.id, uid: user.uid }))
+                      }
+                      className="text-red-500 hover:text-red-700 focus:outline-none font-bold"
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </div>
+                )}
               </li>
             ))
           ) : (
@@ -133,6 +169,8 @@ const Todos = () => {
                       text: update,
                       index: index,
                       uid: user.uid,
+                      completed: completed,
+                      sender: "modify",
                     })
                   );
                   handleClose();
