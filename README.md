@@ -12,6 +12,9 @@ This is a simple to-do list application built with React and Redux. It allows us
 - Mark todos as completed or incomplete.
 - Responsive design, suitable for use on desktop and mobile devices.
 
+# Live Demo
+- [See Project](redux-todo-client.vercel.app)
+
 ## Technologies Used
 
 - React: A JavaScript library for building user interfaces.
@@ -28,7 +31,7 @@ To run the app locally, follow these steps:
 1. Clone this repository to your local machine.
 2. Navigate to the project directory in your terminal.
 3. Run `npm install` to install the dependencies.
-4. Run `npm start` to start the development server.
+4. Run `npm run dev` to start the development server.
 5. Open [http://localhost:3000](http://localhost:3000) in your web browser to view the app.
 
 ## Deployment
