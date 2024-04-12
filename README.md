@@ -13,7 +13,7 @@ This is a simple to-do list application built with React and Redux. It allows us
 - Responsive design, suitable for use on desktop and mobile devices.
 
 # Live Demo
-- [See Project](redux-todo-client.vercel.app)
+- [See Project](https://redux-todo-client.vercel.app)
 
 ## Technologies Used
 
